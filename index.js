@@ -14,6 +14,17 @@ app.get('/api/getSwipeImages', function (req, res) {
   res.send(img);
 });
 
+app.get('/api/getNewsList', function (req, res) {
+  res.append('Access-Control-Allow-Origin', '*');
+  const imgPath = 'http://127.0.0.1:8081/images/news/mycar.jpg';
+  const newsList = new Array(10).fill({
+    image: imgPath,
+    title: '奔驰又出新车，一起去参观！',
+    subTitle: '汽车一点通'
+  });
+  res.send(newsList);
+});
+
 const server = app.listen(8081, function () {
 
   const host = server.address().address;
