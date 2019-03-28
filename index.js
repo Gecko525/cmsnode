@@ -4,8 +4,17 @@ const path = require('path');
 const fs = require('fs');
 
 app.use(express.static('resource'));
+
+app.all('*', function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*'); //访问控制允许来源：所有
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'); //访问控制允许报头 X-Requested-With: xhr请求
+  res.header('Access-Control-Allow-Metheds', 'PUT, POST, GET, DELETE, OPTIONS'); //访问控制允许方法
+  res.header('X-Powered-By', 'nodejs'); //自定义头信息，表示服务端用nodejs
+  res.header('Content-Type', 'application/json;charset=utf-8');
+  next();
+});
+
 app.get('/api/getSwipeImages', function (req, res) {
-  res.append('Access-Control-Allow-Origin', '*');
   const imgPath = 'http://127.0.0.1:8081/images/swipe/';
   const img = [];
   for (let i = 0; i < 4; i++) {
@@ -15,7 +24,6 @@ app.get('/api/getSwipeImages', function (req, res) {
 });
 
 app.get('/api/getNewsList', function (req, res) {
-  res.append('Access-Control-Allow-Origin', '*');
   const imgPath = 'http://127.0.0.1:8081/images/news/mycar.jpg';
   const newsList = new Array(10).fill({
     image: imgPath,
@@ -24,6 +32,17 @@ app.get('/api/getNewsList', function (req, res) {
   });
   res.send(newsList);
 });
+
+app.get('/api/getCarPhotos', function(req, res) {
+  const carJsonFile = path.resolve(__dirname, 'resource/json/carPhoto.json');
+  fs.readFile(carJsonFile, 'utf-8', function (err, data) {
+    if (err) {
+      res.send([]);
+    } else {
+      res.send(data);
+    }
+  })
+})
 
 const server = app.listen(8081, function () {
 
